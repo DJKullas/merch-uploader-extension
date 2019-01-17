@@ -1,17 +1,28 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-    var resultsButton = document.getElementById("getResults");
-    resultsButton.onclick = getResults;
+    var resultsButton = document.getElementById("startUpload");
+    resultsButton.onclick = start;
 });
 
-function getResults(){
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "checkForWord" }, function (response) {
-            showResults(response);
-        });
-    });
+function start(){
+    var file = document.getElementById("file").files[0];
+    var reader = new FileReader();
+    var data;
+    reader.onload = function(e){
+        // console.log(e.target.result);
+        data = e.target.result;
+        next(data);
+    }
+
+    reader.readAsText(file);
 }
 
-function showResults(results) {
-    var resultsElement = document.getElementById("results");
-    resultsElement.innerText = results ? "This page uses jQuery" : "This page does NOT use jQuery";
+function next(data) {
+
+    chrome.storage.local.set({
+        csv: data
+    }, function () {
+        chrome.tabs.executeScript({
+            file: "content.js"
+        });
+    });
 }

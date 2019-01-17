@@ -7,6 +7,10 @@
         "default_popup": "popup.html",
         "default_title": "Check to see if our code is on this page"
     },
+    "permissions": [
+        "storage",
+        "activeTab"
+    ],
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "js": ["content.js"],
